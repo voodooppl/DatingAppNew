@@ -4,23 +4,20 @@ import { Member } from '../../_models/member';
 import { MemberCardComponent } from "../member-card/member-card.component";
 
 @Component({
-    selector: 'app-member-list',
-    standalone: true,
-    templateUrl: './member-list.component.html',
-    styleUrl: './member-list.component.css',
-    imports: [MemberCardComponent]
+  selector: 'app-member-list',
+  standalone: true,
+  templateUrl: './member-list.component.html',
+  styleUrl: './member-list.component.css',
+  imports: [MemberCardComponent]
 })
 export class MemberListComponent implements OnInit {
-  private membersService = inject(MembersService)
-  members: Member[] = [];
-  
+  membersService = inject(MembersService)
+
   ngOnInit(): void {
-    this.getMembers();
+    if (this.membersService.members().length === 0) this.getMembers();
   }
 
-  getMembers(){
-    this.membersService.getMembers().subscribe({
-      next: response => this.members = response,
-    })
+  getMembers() {
+    this.membersService.getMembers();
   }
 }
