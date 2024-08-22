@@ -31,31 +31,21 @@ export class PhotoEditorComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
   }
 
-  deletePhoto(photo: Photo){
+  deletePhoto(photo: Photo) {
     this.memberService.deletePhoto(photo).subscribe({
       next: _ => {
-        const updatedMember = {...this.member()};
+        const updatedMember = { ...this.member() };
         updatedMember.photos = updatedMember.photos.filter(p => p.id !== photo.id);
         this.memberChange.emit(updatedMember);
       }
     })
   }
 
-  setMainPhoto(photo: Photo){
+  updateMainPhoto(photo: Photo) {
     this.memberService.setMainPhoto(photo).subscribe({
       next: _ => {
-        const user = this.accounteService.currentUser();
-        if(user){
-          user.photoUrl = photo.url;
-          this.accounteService.setCurrentUser(user);
-        }
-
-        const updatedMember = {...this.member()};
-        updatedMember.photoUrl = photo.url;
-        updatedMember.photos.forEach(p => {
-          if(p.isMain) p.isMain = false;
-          if(p.id === photo.id) p.isMain = true;
-        });
+        var updatedMember = { ...this.member() };
+        updatedMember = this.setMainPhoto(photo, updatedMember);
 
         this.memberChange.emit(updatedMember);
       }
@@ -79,9 +69,29 @@ export class PhotoEditorComponent implements OnInit {
 
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       const photo = JSON.parse(response);
-      const updatedMember = { ...this.member() };
+      var updatedMember = { ...this.member() };
       updatedMember.photos.push(photo);
+      if (photo.isMain) {
+        updatedMember = this.setMainPhoto(photo, updatedMember);
+      }
+
       this.memberChange.emit(updatedMember);
     }
+  }
+
+  private setMainPhoto(photo: Photo, updatedMember: Member): Member {
+    const user = this.accounteService.currentUser();
+    if (user) {
+      user.photoUrl = photo.url;
+      this.accounteService.setCurrentUser(user);
+    }
+
+    updatedMember.photoUrl = photo.url;
+    updatedMember.photos.forEach(p => {
+      if (p.isMain) p.isMain = false;
+      if (p.id === photo.id) p.isMain = true;
+    });
+
+    return updatedMember;
   }
 }
