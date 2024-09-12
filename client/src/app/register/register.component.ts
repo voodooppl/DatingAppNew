@@ -6,7 +6,6 @@ import { TextInputComponent } from "../_forms/text-input/text-input.component";
 import { DatePickerComponent } from '../_forms/date-picker/date-picker.component';
 import { Router } from '@angular/router';
 import { MembersService } from '../_services/members.service';
-import { Member } from '../_models/member';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +16,6 @@ import { Member } from '../_models/member';
 })
 export class RegisterComponent implements OnInit {
   private accountService = inject(AccountService);
-  private membersService = inject(MembersService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   cancelRegister = output<boolean>();
