@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using api.Entities;
+using API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
@@ -7,6 +8,7 @@ public class DataContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<AppUser> Users { get; set; }
     public DbSet<UserLike> Likes { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
     override protected void OnModelCreating(ModelBuilder builder)
     {
@@ -26,5 +28,15 @@ public class DataContext(DbContextOptions options) : DbContext(options)
             .WithMany(u => u.LikedByUsers)
             .HasForeignKey(u => u.TargetUserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Message>()
+            .HasOne(x => x.Recipient)
+            .WithMany(x => x.MessagesReceived)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Message>()
+            .HasOne(x => x.Sender)
+            .WithMany(x => x.MessagesSent)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
