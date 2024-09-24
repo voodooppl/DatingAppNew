@@ -1,6 +1,4 @@
-using API.Entities;
-
-namespace api.Entities;
+namespace API.Entities;
 
 public class Message
 {

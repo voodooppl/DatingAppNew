@@ -1,4 +1,4 @@
-using api.Entities;
+using API.Entities;
 using API.DTOs;
 using API.Helpers;
 using API.Interfaces;
