@@ -23,9 +23,9 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<MemberDto>> GetUserById(int id)
+    public async Task<ActionResult<AppUser?>> GetUserById(int id)
     {
-        var user = await unitOfWork.UserRepository.GetMemberByIdAsync(id);
+        var user = await unitOfWork.UserRepository.GetUserByPhotoId(id);
 
         if (user == null) return NotFound();
 
@@ -35,7 +35,8 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
     [HttpGet("{username}")]
     public async Task<ActionResult<MemberDto>> GetUserByUsername(string username)
     {
-        var user = await unitOfWork.UserRepository.GetMemberByUsernameAsync(username);
+        var isCurrentUser = User.GetUsername() == username;
+        var user = await unitOfWork.UserRepository.GetMemberByUsernameAsync(username, isCurrentUser);
 
         if (user == null) return NotFound();
 
@@ -69,10 +70,11 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
         var photo = new Photo
         {
             Url = result.SecureUrl.AbsoluteUri,
-            PublicId = result.PublicId
+            PublicId = result.PublicId,
+            IsMain = false,
         };
 
-        if(user.Photos.Count == 0) photo.IsMain = true;
+        // if(user.Photos.Count == 0) photo.IsMain = true;
 
         user.Photos.Add(photo);
 
