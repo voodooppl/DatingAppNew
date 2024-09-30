@@ -1,1 +1,12 @@
-<p>photo-management works!</p>
+<div class="d-flex">
+    @for (photo of photosToApprove; track photo.id) {
+    <div class="card mx-2">
+        <h4>{{photo.username}}</h4>
+        <img src="{{photo.url}}" alt="{{photo.username}}">
+        <div class="mt-2">
+            <button class="btn btn-sm me-1 btn-success" (click)="approvePhoto(photo.id)">Approve</button>
+            <button class="btn btn-sm btn-danger" (click)="rejectPhoto(photo.id)">Reject</button>
+        </div>
+    </div>
+    }
+</div>
