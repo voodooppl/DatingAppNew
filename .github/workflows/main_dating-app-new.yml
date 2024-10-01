@@ -27,6 +27,10 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o ./myapp  # Publishing to myapp directory
 
+      # Check if the files were published correctly
+      - name: List published files
+        run: dir ./myapp
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -46,7 +50,11 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: dotnet-app  # Make sure this matches upload step
+          name: dotnet-app  # Download the same artifact name
+
+      # Check if the files were downloaded correctly
+      - name: List downloaded files
+        run: dir ./myapp
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -61,6 +69,7 @@ jobs:
         with:
           app-name: 'dating-app-new'
           slot-name: 'Production'
-          package: ./myapp  # Path to the downloaded artifact
+          package: ./myapp  # Ensure the path is correct
+
 
           
