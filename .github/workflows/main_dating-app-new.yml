@@ -24,8 +24,9 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
+      # Specify the project to publish
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./myapp  # Publishing to myapp directory
+        run: dotnet publish ./API/API.csproj -c Release -o ./myapp  # Adjust path if necessary
 
       # Check if the files were published correctly
       - name: List published files
@@ -34,7 +35,7 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: dotnet-app  # Make sure this matches download step
+          name: dotnet-app  # Make sure this matches the download step
           path: ./myapp  # The directory containing the published files
 
   deploy:
@@ -70,6 +71,7 @@ jobs:
           app-name: 'dating-app-new'
           slot-name: 'Production'
           package: ./myapp  # Ensure the path is correct
+
 
 
           
