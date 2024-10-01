@@ -16,27 +16,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli@17
+
+      - name: Install deps and build angular app
+        run: |
+          cd client
+          npm install
+          ng build
+
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '8.x'
+          include-prerelease: true
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      # Specify the project to publish
       - name: dotnet publish
-        run: dotnet publish ./API/API.csproj -c Release -o ./myapp  # Adjust path if necessary
-
-      # Check if the files were published correctly
-      - name: List published files
-        run: dir ./myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: dotnet-app  # Make sure this matches the download step
-          path: ./myapp  # The directory containing the published files
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: windows-latest
