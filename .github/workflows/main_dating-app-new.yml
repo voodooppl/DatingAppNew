@@ -36,7 +36,7 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: dotnet-app  # Ensure this matches the download step
+          name: dating-app-new  # Ensure this matches the download step
           path: ./myapp  # The directory containing the published files
 
   deploy:
@@ -52,7 +52,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: dotnet-app  # Download the same artifact name
+          name: dating-app-new  # Download the same artifact name
 
       # Check if the files were downloaded correctly
       - name: List downloaded files
