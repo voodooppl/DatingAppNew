@@ -25,13 +25,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./myapp
+        run: dotnet publish -c Release -o ./myapp  # Publishing to myapp directory
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: dotnet-app  # Make sure this matches download step
+          path: ./myapp  # The directory containing the published files
 
   deploy:
     runs-on: windows-latest
@@ -40,14 +40,14 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-      
+          name: dotnet-app  # Make sure this matches upload step
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -61,5 +61,6 @@ jobs:
         with:
           app-name: 'dating-app-new'
           slot-name: 'Production'
-          package: .
+          package: ./myapp  # Path to the downloaded artifact
+
           
