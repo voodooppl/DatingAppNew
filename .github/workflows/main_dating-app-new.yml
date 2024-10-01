@@ -36,8 +36,8 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: dotnet-app  # Ensure this matches the download step
+          path: ./myapp  # The directory containing the published files
 
   deploy:
     runs-on: windows-latest
