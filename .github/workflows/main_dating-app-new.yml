@@ -28,15 +28,18 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build ./API/API.csproj --configuration Release  # Ensure to specify the project file
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ./API/API.csproj -c Release -o ./myapp  # Publish to a local folder
+
+      - name: List published files
+        run: dir ./myapp  # List files to ensure they were published correctly
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: dating-app-new  # Ensure this matches the download step
+          name: dating-app-artifact  # Name the artifact uniquely
           path: ./myapp  # The directory containing the published files
 
   deploy:
@@ -46,17 +49,17 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write
+      id-token: write  # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: dating-app-new  # Download the same artifact name
+          name: dating-app-artifact  # Match the artifact name here
 
       # Check if the files were downloaded correctly
       - name: List downloaded files
-        run: dir ./myapp
+        run: dir ./myapp  # Verify that the directory exists and is populated
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -72,6 +75,7 @@ jobs:
           app-name: 'dating-app-new'
           slot-name: 'Production'
           package: ./myapp  # Ensure the path is correct
+
 
 
 
